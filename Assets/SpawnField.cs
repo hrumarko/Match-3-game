@@ -102,6 +102,7 @@ public class SpawnField : MonoBehaviour
                     }
                 }
         }
+        Invoke("LoweringDown", 0.3f);
         
     }
     public void CheckArrayForSpawn(int a, int rand){
@@ -123,18 +124,22 @@ public class SpawnField : MonoBehaviour
             for(int x = 0; x < fieldSize; x++){
                 if(field[x, y] == null){
                      n = y+1;
-                     while(field[x, n] == null){
+                     while( n < fieldSize -1 && field[x, n] == null){
                         n++;
                      }
+                    if(field[x, n] != null){
+                        field[x, n].transform.position -= new Vector3(0, (n-y), 0);
+                        field[x, y] = field[x, n];
+                        field[x, n] = null;
+                    }
                     
-                    field[x, n].transform.position -= new Vector3(0, n-y, 0);
-                    field[x, y] = field[x, n];
-                    field[x, n] = null;
                     
                 }
                 
             }
         }
+
+        Invoke("FillingTheVoid", 0.3f);
         
     }
 
