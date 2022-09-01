@@ -641,7 +641,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2127540414}
         m_TargetAssemblyTypeName: SpawnField, Assembly-CSharp
-        m_MethodName: Clean
+        m_MethodName: CheckWinLines
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -722,6 +722,8 @@ MonoBehaviour:
   - {fileID: 7525377277675092457, guid: f892f43bcf9fe784992312aba5e83a0b, type: 3}
   - {fileID: 3901520359887731246, guid: 4a1525f5f1f739c4489ca17db16acdf6, type: 3}
   - {fileID: 7787936456399218829, guid: 78fce3cc58d4d364e8d6fe3d636e49ee, type: 3}
+  - {fileID: 4478359405186261371, guid: 07dfd6e22db30974bb3a8a77340e583e, type: 3}
+  - {fileID: 1465075489432478636, guid: 63bc5c6dbff50b445bbaa8961c58f25e, type: 3}
 --- !u!4 &2127540415
 Transform:
   m_ObjectHideFlags: 0

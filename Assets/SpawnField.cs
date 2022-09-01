@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpawnField : MonoBehaviour
 {
     public GameObject[] gameObjects;
-    public GameObject[,] field;
+    public static GameObject[,] field;
     int fieldSize = 10;
     
     int rand;
@@ -15,6 +15,12 @@ public class SpawnField : MonoBehaviour
         FirstSpawn();
         Clean(); 
     }
+    void Update(){
+        // CheckWinLines();
+        if(Input.GetMouseButtonDown(1)){
+            LoweringDown();
+        }
+    }
 
     public void FirstSpawn(){
         int a = 0;
@@ -22,16 +28,17 @@ public class SpawnField : MonoBehaviour
         for(int y = 0; y < fieldSize; y++){
             for(int x = 0; x < fieldSize; x++){
                 rand = Random.Range(0, gameObjects.Length);
-                if(a==0){
-                    nums[0] = rand;
-                    a = 1;
-                }else if(a == 1){
-                    nums[1] = rand;
-                    a = 2;
-                }else if(a == 2){
-                    nums[2] = rand;
-                    a =0;
-                }
+                // if(a==0){
+                //     nums[0] = rand;
+                //     a = 1;
+                // }else if(a == 1){
+                //     nums[1] = rand;
+                //     a = 2;
+                // }else if(a == 2){
+                //     nums[2] = rand;
+                //     a =0;
+                // }
+                CheckArrayForSpawn(a, rand);
                 if(nums[0] == nums[1] && nums[1] == nums[2]){
                     while(rand== nums[2]){
                         rand = Random.Range(0, gameObjects.Length);
@@ -46,22 +53,14 @@ public class SpawnField : MonoBehaviour
             }
         }
     }
-    public void Clean(){
+    void Clean(){
+        
         int b = 0;
         for(int x = 0; x < fieldSize; x++){
             for(int y = 0; y < fieldSize; y++){
                 int rands = field[x, y].GetComponent<ObjectsGame>().Num;
-                if(b == 0){
-                    nums[0]= rands;
-                    b=1;
-                }else if(b == 1){
-                    nums[1]= rands;
-                    b=2;
-                }else if(b == 2){
-                    b=0;
-                    nums[2]= rands;
-                }
-
+                
+                CheckArrayForSpawn(b, rands);
                 if(nums[0]== nums[1] && nums[1]==nums[2]){
                     while(rands == field[x,y].GetComponent<ObjectsGame>().Num){
                         rands =Random.Range(0, gameObjects.Length);
@@ -73,10 +72,72 @@ public class SpawnField : MonoBehaviour
                     Destroy(field[x, y]);
                     
                     GameObject go = Instantiate(gameObjects[rands], new Vector2(x, y), Quaternion.identity);
+                    go.GetComponent<ObjectsGame>().SetPos(x, y);
                     field[x, y] = go;
                 }
 
             }
         }
+    }
+
+    
+
+    public void CheckWinLines(){
+        
+        
+        for(int y = 0; y < fieldSize; y++){
+            for(int x = 0; x < fieldSize; x++){
+                if(x<7){
+                    if(field[x, y].GetComponent<ObjectsGame>().Num == field[x+1, y].GetComponent<ObjectsGame>().Num && field[x+1, y].GetComponent<ObjectsGame>().Num == field[x+2, y].GetComponent<ObjectsGame>().Num){
+                        Destroy(field[x, y]);
+                        
+                        Destroy(field[x+1, y]);
+                        Destroy(field[x+2, y]);
+                    }
+                }
+            }
+        }
+    }
+    public void CheckArrayForSpawn(int a, int rand){
+                if(a==0){
+                    nums[0] = rand;
+                    a = 1;
+                }else if(a == 1){
+                    nums[1] = rand;
+                    a = 2;
+                }else if(a == 2){
+                    nums[2] = rand;
+                    a =0;
+                }
+    }
+
+    public void LoweringDown(){
+        for(int y = 0; y < fieldSize -1; y++){
+            for(int x = 0; x < fieldSize; x++){
+                if(field[x, y] == null){
+                    field[x, y+1].transform.position -= new Vector3(0, 1, 0);
+                    field[x, y] = field[x, y+1];
+                    field[x, y+1] = null;
+                    Debug.Log("OPA");
+                }
+                
+            }
+        }
+        FillingTheVoid();
+    }
+
+    public void FillingTheVoid(){
+        int random;
+            for(int y = 0; y < fieldSize; y++){
+                for(int x = 0; x < fieldSize; x++){
+                    if(field[x, y] == null){
+                        random = Random.Range(0, gameObjects.Length);
+                        GameObject go = Instantiate(gameObjects[random], new Vector2(x, y), Quaternion.identity);
+                        go.GetComponent<ObjectsGame>().SetPos(x, y);
+                        field[x, y] = go;
+                        
+                    }
+                }
+            }
     }
 }
