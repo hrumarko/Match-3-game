@@ -1,32 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 public class SpawnField : MonoBehaviour
 {
     public GameObject[] gameObjects;
     public static GameObject[,] field;
     int fieldSize = 10;
-    
+    public GameObject par;
     int rand;
     int?[] nums = new int?[3];
+    public Animator startAnimator;
     
     void Start(){
+        
         FirstSpawn();
         Clean();
+        
         
     }
     void Update(){
         
+        FillingTheVoid();
         
-        if(Input.GetMouseButtonDown(1)){
-            LoweringDown();
-        }
-        if(Input.GetKeyDown(KeyCode.Space)){
-            FillingTheVoid();
-        }
         
+    }
+    public void LoadScenes(){
+        SceneManager.LoadScene(0);
     }
 
     public void FirstSpawn(){
@@ -35,16 +36,7 @@ public class SpawnField : MonoBehaviour
         for(int y = 0; y < fieldSize; y++){
             for(int x = 0; x < fieldSize; x++){
                 rand = Random.Range(0, gameObjects.Length);
-                // if(a==0){
-                //     nums[0] = rand;
-                //     a = 1;
-                // }else if(a == 1){
-                //     nums[1] = rand;
-                //     a = 2;
-                // }else if(a == 2){
-                //     nums[2] = rand;
-                //     a =0;
-                // }
+
                 CheckArrayForSpawn(a, rand);
                 if(nums[0] == nums[1] && nums[1] == nums[2]){
                     while(rand== nums[2]){
@@ -56,6 +48,7 @@ public class SpawnField : MonoBehaviour
                 }
                 GameObject go = Instantiate(gameObjects[rand], new Vector2(x, y), Quaternion.identity);
                 go.GetComponent<ObjectsGame>().SetPos(x, y);
+                go.transform.parent = par.transform;
                 field[x, y] = go;
             }
         }
@@ -85,13 +78,13 @@ public class SpawnField : MonoBehaviour
 
             }
         }
+
+        
     }
 
     
 
     public void CheckWinLines(){
-        
-        Debug.Log("ХУЙ");
         for(int y = 0; y < fieldSize; y++){
             for(int x = 0; x < 8; x++){
                 if(field[x, y].GetComponent<ObjectsGame>().Num == field[x+1, y].GetComponent<ObjectsGame>().Num && field[x+1, y].GetComponent<ObjectsGame>().Num == field[x+2, y].GetComponent<ObjectsGame>().Num){
@@ -151,10 +144,17 @@ public class SpawnField : MonoBehaviour
                         random = Random.Range(0, gameObjects.Length);
                         GameObject go = Instantiate(gameObjects[random], new Vector2(x, y), Quaternion.identity);
                         go.GetComponent<ObjectsGame>().SetPos(x, y);
+                        go.transform.parent = par.transform;
                         field[x, y] = go;
                         
                     }
                 }
             }
+            Invoke("CheckWinLines", 0.3f);
+            
+    }
+
+    void PlayAnim(){
+        startAnimator.Play("start_game");
     }
 }
