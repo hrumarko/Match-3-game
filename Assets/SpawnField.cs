@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class SpawnField : MonoBehaviour
 {
     public GameObject[] gameObjects;
@@ -13,13 +14,19 @@ public class SpawnField : MonoBehaviour
     
     void Start(){
         FirstSpawn();
-        Clean(); 
+        Clean();
+        
     }
     void Update(){
-        // CheckWinLines();
+        
+        
         if(Input.GetMouseButtonDown(1)){
             LoweringDown();
         }
+        if(Input.GetKeyDown(KeyCode.Space)){
+            FillingTheVoid();
+        }
+        
     }
 
     public void FirstSpawn(){
@@ -84,19 +91,18 @@ public class SpawnField : MonoBehaviour
 
     public void CheckWinLines(){
         
-        
+        Debug.Log("ХУЙ");
         for(int y = 0; y < fieldSize; y++){
-            for(int x = 0; x < fieldSize; x++){
-                if(x<7){
-                    if(field[x, y].GetComponent<ObjectsGame>().Num == field[x+1, y].GetComponent<ObjectsGame>().Num && field[x+1, y].GetComponent<ObjectsGame>().Num == field[x+2, y].GetComponent<ObjectsGame>().Num){
+            for(int x = 0; x < 8; x++){
+                if(field[x, y].GetComponent<ObjectsGame>().Num == field[x+1, y].GetComponent<ObjectsGame>().Num && field[x+1, y].GetComponent<ObjectsGame>().Num == field[x+2, y].GetComponent<ObjectsGame>().Num){
                         Destroy(field[x, y]);
                         
                         Destroy(field[x+1, y]);
                         Destroy(field[x+2, y]);
                     }
                 }
-            }
         }
+        
     }
     public void CheckArrayForSpawn(int a, int rand){
                 if(a==0){
@@ -112,18 +118,24 @@ public class SpawnField : MonoBehaviour
     }
 
     public void LoweringDown(){
+        int n;
         for(int y = 0; y < fieldSize -1; y++){
             for(int x = 0; x < fieldSize; x++){
                 if(field[x, y] == null){
-                    field[x, y+1].transform.position -= new Vector3(0, 1, 0);
-                    field[x, y] = field[x, y+1];
-                    field[x, y+1] = null;
-                    Debug.Log("OPA");
+                     n = y+1;
+                     while(field[x, n] == null){
+                        n++;
+                     }
+                    
+                    field[x, n].transform.position -= new Vector3(0, n-y, 0);
+                    field[x, y] = field[x, n];
+                    field[x, n] = null;
+                    
                 }
                 
             }
         }
-        FillingTheVoid();
+        
     }
 
     public void FillingTheVoid(){
